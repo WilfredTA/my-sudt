@@ -57,10 +57,13 @@ fn check_owner_mode(args: &[u8]) -> Result<bool, Error> {
             Err(SysError::IndexOutOfBound) => return Ok(false),
             Err(err) => return Err(err.into()),
         };
+
+        // invalid length of loaded data
         if len != buf.len() {
             return Err(Error::Encoding);
         }
-        if args[..] == buf[..len] {
+
+        if args[..] == buf[..] {
             return Ok(true);
         }
         i += 1;
@@ -68,8 +71,8 @@ fn check_owner_mode(args: &[u8]) -> Result<bool, Error> {
 }
 
 fn collect_inputs_amount() -> Result<u128, Error> {
-    // With owner lock script extracted, we will look through each input in the
-    // current transaction to see if any unlocked cell uses owner lock.
+    // let's loop through all input cells containing current UDTs,
+    // and gather the sum of all input tokens.
     let mut inputs_amount: u128 = 0;
     let mut i = 0;
 
@@ -125,6 +128,8 @@ fn check() -> Result<(), Error> {
         let len = syscalls::load_script(&mut buf, 0)?;
         Script::new_unchecked(buf[..len].to_vec().into())
     };
+
+    // unpack the Script#args field
     let args: Vec<u8> = script.args().unpack();
 
     // return success if owner mode is true

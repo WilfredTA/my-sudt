@@ -1,11 +1,6 @@
 use super::*;
 use ckb_testtool::context::Context;
-use ckb_tool::ckb_types::{
-    bytes::Bytes,
-    core::TransactionBuilder,
-    packed::*,
-    prelude::*,
-};
+use ckb_tool::ckb_types::{bytes::Bytes, core::TransactionBuilder, packed::*, prelude::*};
 
 const MAX_CYCLES: u64 = 100_0000;
 
@@ -17,12 +12,8 @@ fn test_basic() {
     let contract_out_point = context.deploy_contract(contract_bin);
 
     // prepare scripts
-    let lock_script = context
-        .get_script(&contract_out_point)
-        .expect("script");
-    let lock_script_dep = CellDep::new_builder()
-        .out_point(contract_out_point)
-        .build();
+    let lock_script = context.get_script(&contract_out_point).expect("script");
+    let lock_script_dep = CellDep::new_builder().out_point(contract_out_point).build();
 
     // prepare cells
     let input_out_point = context.create_cell(
@@ -59,6 +50,6 @@ fn test_basic() {
 
     // run
     context
-    .verify_tx(&tx, MAX_CYCLES)
-    .expect("pass verification");
+        .verify_tx(&tx, MAX_CYCLES)
+        .expect("pass verification");
 }
