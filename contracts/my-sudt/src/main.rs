@@ -6,7 +6,8 @@
 
 use alloc::vec::Vec;
 use ckb_std::{
-    ckb_constants::{CellField, Source, SysError},
+    ckb_constants::{CellField, Source},
+    Error::SysError,
     default_alloc, entry, syscalls,
 };
 use ckb_types::{packed::Script, prelude::*};
@@ -33,6 +34,7 @@ impl From<SysError> for Error {
         match err {
             IndexOutOfBound => Self::IndexOutOfBound,
             ItemMissing => Self::ItemMissing,
+            Encoding => Self::Encoding,
             LengthNotEnough(_) => Self::LengthNotEnough,
             Unknown(err_code) => panic!("unexpected sys error {}", err_code),
         }
